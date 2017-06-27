@@ -1,5 +1,5 @@
 from pj import *
-"""nesto ne radi"""
+"""nesto ne radi, a nije mi jasno štoooo"""
 class AN(enum.Enum):
   BROJ=1
   PLUS='+'
@@ -31,44 +31,50 @@ def an_lex(kod):
 # član -> faktor PUTA član | faktor
 # faktor -> baza NA faktor | baza
 # baza -> BROJ | OTVORENA izraz ZATVORENA
-class Zbroj(AST('pribrojnici')):pass
-class Umnožak(AST('faktori')):pass
-class Potencija(AST('baza eksponent')):pass
+class Zbroj(AST('pribrojnici')): pass
+class Umnožak(AST('faktori')): pass
+class Potencija(AST('baza eksponent')): pass
+
 class ANParser(Parser):
     def izraz(self):
         član = self.član()
         if self >> AN.PLUS: return Zbroj([član, self.izraz()])
-        else:
-            return član
+        else: return član
 
     def član(self):
-        faktor= self.faktor()
+        faktor = self.faktor()
         if self >> AN.PUTA: return Umnožak([faktor, self.član()])
-        else:
-            return faktor
+        else: return faktor
 
     def faktor(self):
         baza = self.baza()
         if self >> AN.NA: return Potencija(baza, self.faktor())
-        else:
-            return baza
+        else: return baza
 
     def baza(self):
         if self >> AN.BROJ: return self.zadnji
         elif self >> AN.OTVORENA:
-            uzagradi=self.izraz()
+            u_zagradi = self.izraz()
             self.pročitaj(AN.ZATVORENA)
-            return uzagradi
+            return u_zagradi
         else: self.greška()
 
-    start=izraz
+    start = izraz
 
-
+def an_interpret(izraz):
+    if izraz ** AN.BROJ: return int(izraz.sadržaj)
+    elif izraz ** Zbroj: return sum(map(an_interpret, izraz.pribrojnici))
+    elif izraz ** Umnožak:
+        f1, f2= izraz.faktori
+        return an_interpret(f1)*an_interpret(f2)
+    elif izraz ** Potencija:
+        return an_interpret(izraz.baza)**an_interpret(izraz.eksponent)
 
 
 if __name__ == '__main__':
-    lexer=an_lex('2+3')
+    lexer=an_lex('(2+3)')
 
     for token in iter(lexer):
         print(token)
-    print(ANParser.parsiraj(lexer))
+    mi= an_interpret(ANParser.parsiraj(lexer))
+    print(mi)

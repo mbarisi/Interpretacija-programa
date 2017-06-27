@@ -1,5 +1,6 @@
 from pj import *
-import pprint   """NIJE DOBRO, TREBA POPRAVITI"""
+import pprint
+"""NIJE DOBRO, TREBA POPRAVITI"""
 
 class SQL(enum.Enum):
     SELECT= 'SELECT'
