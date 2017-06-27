@@ -1,5 +1,5 @@
 from pj import *
-import pprint   """NIJE DOBRO, TREBA POPRAVITI"""
+import pprint
 
 class SQL(enum.Enum):
     SELECT= 'SELECT'
@@ -54,13 +54,13 @@ class SQLParser(Parser):
         return Skripta(naredbe)
 
     def naredba(self):
-        if self >> SQL.SELECT: rezultat= sql.select()
-        elif self >> SQL.CREATE: rezultat= sql.create()
+        if self >> SQL.SELECT: rezultat= self.select()
+        elif self >> SQL.CREATE: rezultat= self.create()
         self.pročitaj(SQL.TOČKAZAREZ)
         return rezultat
 
     def select(self):
-        if self >> SQL.ZVIJEZDICA:
+        if self >> SQL.ZVJEZDICA:
             sve=True
             stupci=nenavedeno
             self.pročitaj(SQL.FROM)
@@ -77,11 +77,20 @@ class SQLParser(Parser):
         self.pročitaj(SQL.TABLE)
         tablica= self.pročitaj(SQL.IME)
         self.pročitaj(SQL.OTVORENA)
-        stupci= [self.stupac()]
+        stupci= [self.spec_stupac()]
         while not self >> SQL.ZATVORENA:
             self.pročitaj(SQL.ZAREZ)
             stupci.append(self.spec_stupac())
         return Create(tablica, stupci)
+
+    def spec_stupac(self):
+        ime = self.pročitaj(SQL.IME)
+        tip = self.pročitaj(SQL.IME)
+        if self >> SQL.OTVORENA:
+            veličina = self.pročitaj(SQL.BROJ)
+            self.pročitaj(SQL.ZATVORENA)
+        else: veličina = nenavedeno
+        return Stupac(ime, tip, veličina)
 
 class Skripta(AST('naredbe')):
     def razriješi(self):
@@ -138,6 +147,4 @@ if __name__ == '__main__':
             SELECT Name, Married FROM Persons;
             SELECT Name from Persons;
     ''')
-    for token in iter(lexer):
-        print(token)
-    SQLParser.parsiraj(lexer)
+    print(SQLParser.parsiraj(lexer))

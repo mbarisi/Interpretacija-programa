@@ -66,9 +66,6 @@ class ANParser(Parser):
 
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': ###SMETALA MU JE FOR PETLJA!!!!
     lexer=an_lex('2+3')
-
-    for token in iter(lexer):
-        print(token)
     print(ANParser.parsiraj(lexer))
