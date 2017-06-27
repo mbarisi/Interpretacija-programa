@@ -1,5 +1,9 @@
 from pj import *
 import pprint
+<<<<<<< HEAD
+=======
+"""NIJE DOBRO, TREBA POPRAVITI"""
+>>>>>>> 1f6bc6ead729ba1a20c3cc881ab14c2178bc7ac8
 
 class SQL(enum.Enum):
     SELECT= 'SELECT'
