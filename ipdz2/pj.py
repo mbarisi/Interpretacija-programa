@@ -33,7 +33,7 @@ class Tokenizer:
     @property
     def sadržaj(self): return ''.join(self.pročitani)
 
-    def čitaj(self) -> object:
+    def čitaj(self):
         """Čita sljedeći znak iz buffera ili stringa."""
         znak = self.buffer or next(self.stream, '')
         self.pročitani.append(znak)
@@ -65,7 +65,7 @@ class Tokenizer:
         """Čita Kleene* (nula ili više) znakova koji zadovoljavaju uvjet."""
         while uvjet(self.čitaj()): pass
         self.vrati()
-        
+
     def pročitaj(self, znak):
         """Čita zadani znak, ili prijavljuje leksičku grešku."""
         if znak != self.čitaj(): self.greška('očekivano {!r}'.format(znak))
@@ -100,7 +100,7 @@ class Token(collections.namedtuple('_', 'tip sadržaj')):
     def __init__(self, *args):
         self.uspoređeni = set()
         self.razriješen = True
-    
+
     def __repr__(self):
         ime, sadržaj = self.tip.name, self.sadržaj
         if sadržaj not in {ime, ''}: ime += repr(self.sadržaj)
@@ -198,7 +198,7 @@ class Parser:
         else:
             parser.pročitaj(E.KRAJ)
             return rezultat
-        
+
 
 elementarni = str, int, bool
 
@@ -232,7 +232,7 @@ nenavedeno = Nenavedeno()
 def AST(atributi):
     AST2 = collections.namedtuple('AST2', atributi)
     # AST2.__new__.__defaults__ = tuple(nenavedeno for field in AST2._fields)
-    
+
     class AST1(AST2, AST0):
         def __new__(cls, *args, **kw):
             new_args = [AST_adapt(arg) for arg in args]
