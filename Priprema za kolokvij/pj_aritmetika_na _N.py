@@ -1,5 +1,5 @@
 from pj import *
-"""nesto ne radi, a nije mi jasno štoooo"""
+
 class AN(enum.Enum):
   BROJ=1
   PLUS='+'
@@ -7,6 +7,7 @@ class AN(enum.Enum):
   NA='^'
   OTVORENA='('
   ZATVORENA=')'
+
 def an_lex(kod):
     lex=Tokenizer(kod)
     for znak in iter(lex.čitaj, ''):
@@ -70,17 +71,35 @@ def an_interpret(izraz):
     elif izraz ** Potencija:
         return an_interpret(izraz.baza)**an_interpret(izraz.eksponent)
 
+def an_optim(izraz):
+    nula, jedan=Token(AN.BROJ, '0'), Token(AN.BROJ, '1')
+    if izraz ** AN.BROJ: return izraz
+    elif izraz ** Zbroj:
+        o1, o2=map(an_optim, izraz.pribrojnici)
+        if o1 == nula: return o2
+        elif o2 == nula: return o1
+        else: return Zbroj([o1, o2])
+    elif izraz ** Umnožak:
+        o1, o2=map(an_optim, izraz.faktori)
+        if o1 == jedan: return o2
+        elif o2 == jedan: return o1
+        elif nula in {o1, o2}: return nula
+        else: return Umnožak([o1, o2])
+    elif izraz ** Potencija:
+        o_baza=an_optim(izraz.baza)
+        o_eksponent= an_optim(izraz.eksponent)
+        if o_eksponent == nula: return jedan
+        elif o_baza== nula: return nula
+        elif jedan in {o_baza, o_eksponent}: return o_baza
+        else: return Potencija(o_baza, o_eksponent)
 
-<<<<<<< HEAD
+
+
+
 if __name__ == '__main__': ###SMETALA MU JE FOR PETLJA!!!!
-    lexer=an_lex('2+3')
-    print(ANParser.parsiraj(lexer))
-=======
-if __name__ == '__main__':
-    lexer=an_lex('(2+3)')
-
-    for token in iter(lexer):
-        print(token)
-    mi= an_interpret(ANParser.parsiraj(lexer))
-    print(mi)
->>>>>>> 1f6bc6ead729ba1a20c3cc881ab14c2178bc7ac8
+    lexer=an_lex('2+3*5')
+    l2=an_lex('2*0+6*3')
+    x=ANParser.parsiraj(l2)
+    x=an_optim(x)
+    print(x)
+    print(an_interpret(x))

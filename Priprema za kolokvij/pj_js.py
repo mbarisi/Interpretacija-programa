@@ -18,9 +18,12 @@ def js_lex(kod):
     lex= Tokenizer(kod)
     for znak in iter(lex.čitaj, ''):
         if znak.isspace(): lex.token(E.PRAZNO)
-        elif znak.isalpha():
-            lex.zvijezda(identifikator)
-            yield lex.token(ključna_riječ(JS, lex.sadržaj) or JS.IME)
+        elif znak == '(': yield lex.token(JS.OTV)
+        elif znak == ')': yield lex.token(JS.ZATV)
+        elif znak == '{': yield lex.token(JS.VOTV)
+        elif znak == '}': yield lex.token(JS.VZATV)
+        elif znak == ';': yield lex.token(JS.TOČKAZAREZ)
+        elif znak == ',': yield lex.token(JS.ZAREZ)
         elif znak== '/':
             if lex.čitaj()=='/':
                 lex.zvijezda(lambda znak: znak != '\n')
@@ -29,7 +32,10 @@ def js_lex(kod):
             else:
                 lex.vrati()
                 yield lex.token(JS.KOSACRTA)
-        else: yield lex.token(operator(JS, znak) or lex.greška())
+        elif znak.isalpha():
+            lex.zvijezda(identifikator)
+            yield lex.token(ključna_riječ(JS, lex.sadržaj) or JS.IME)
+        else: lex.greška()
 
 ### Beskontekstna gramatika
 # funkcija -> FUNCTION IME O_OTV argumenti O_ZATV V_OTV tijelo V_ZATV
@@ -41,32 +47,32 @@ def js_lex(kod):
 
 class Funkcija(AST('ime argumenti tijelo')):pass
 class Program(AST('funkcije')):pass
-
 class JSParser(Parser):
     def funkcija(self):
         self.pročitaj(JS.FUNCTION)
-        ime = self.pročitaj(JS.IME)
+        ime= self.pročitaj(JS.IME)
         self.pročitaj(JS.OTV)
-        if self >> JS.ZATV:
-            argumenti = []
+        if self >> JS.ZATV: argumenti=[]
         else:
-            argumenti = [self.argument()]
+            argumenti=[self.argument()]
             while not self >> JS.ZATV:
                 self.pročitaj(JS.ZAREZ)
                 argumenti.append(self.argument())
-
         return Funkcija(ime, argumenti, self.tijelo())
+
+    def argument(self):
+        self.pročitaj(JS.VAR)
+        return self.pročitaj(JS.IME)
 
     def tijelo(self):
         self.pročitaj(JS.VOTV)
-        while self>>JS.KOMENTAR: pass
-        naredbe= []
+        while self>>JS.KOMENTAR:pass
+        naredbe=[]
         while not self >> JS.VZATV:
             naredbe.append(self.naredba())
-            if self>>JS.TOČKAZAREZ:pass
-            elif self>>JS.KOMENTAR:
-                while self>>JS.KOMENTAR:pass
-            elif self>> JS.VZATV: break
+            if self>> JS.TOČKAZAREZ: pass
+            elif self>> JS.KOMENTAR:
+                while self>> JS.KOMENTAR: pass
             else: self.greška()
         return naredbe
 
@@ -74,10 +80,6 @@ class JSParser(Parser):
         funkcije=[self.funkcija()]
         while not self >> E.KRAJ: funkcije.append(self.funkcija())
         return Program(funkcije)
-
-    def argument(self):
-        self.pročitaj(JS.VAR)
-        return self.pročitaj(JS.IME)
 
     def naredba(self):
         return self.pročitaj(JS.NAREDBA)
@@ -87,6 +89,6 @@ class JSParser(Parser):
 if __name__=='__main__':
     print(JSParser.parsiraj(js_lex('''\
            function ime (var x, var y, var z) {
-              
+                naredba;
            }
        ''')))
