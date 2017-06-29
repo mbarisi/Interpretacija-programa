@@ -7,6 +7,9 @@ class SQL(enum.Enum):
     CREATE= 'CREATE'
     TABLE= 'TABLE'
     FROM= 'FROM'
+    INSERT='INSERT'
+    INTO='INTO'
+    VALUES='VALUES'
     OTVORENA= '('
     ZATVORENA=')'
     BROJ=123
@@ -15,6 +18,8 @@ class SQL(enum.Enum):
     IME='ime'
     ZVJEZDICA='*'
     ZAREZ=','
+    
+
 
 def sql_lex(kod):
     lex=Tokenizer(kod)
@@ -57,8 +62,33 @@ class SQLParser(Parser):
     def naredba(self):
         if self >> SQL.SELECT: rezultat= self.select()
         elif self >> SQL.CREATE: rezultat= self.create()
+        elif self>> SQL.INSERT: rezultat= self.insert()
         self.pročitaj(SQL.TOČKAZAREZ)
         return rezultat
+
+    def insert(self):
+        self.pročitaj(SQL.INTO)
+        tablica = self.pročitaj(SQL.IME)
+        if self >> SQL.OTVORENA:
+            stupci= [self.spec_stupac()]
+            while not self >> SQL.ZATVORENA:
+                self.pročitaj(SQL.ZAREZ)
+                stupci.append(self.spec_stupac())
+            self.pročitaj(SQL.VALUES)
+            self.pročitaj(SQL.OTVORENA)
+            values=[]
+            while not self>> SQL.ZATVORENA:
+                values.append(self.pročitaj(SQL.IME))
+                self.pročitaj(SQL.ZAREZ)
+        else:
+            self.pročitaj(SQL.VALUES)
+            self.pročitaj(SQL.OTVORENA)
+            values=[]
+            while not self>> SQL.ZATVORENA:
+                values.append(self.pročitaj(SQL.IME))
+                self.pročitaj(SQL.ZAREZ)
+        return Insert(tablica, values)
+
 
     def select(self):
         if self >> SQL.ZVJEZDICA:
@@ -105,7 +135,8 @@ class Create(AST('tablica specifikacije')):
         tb = imena[self.tablica.sadržaj] = {}
         for stupac in self.specifikacije:
             tb[stupac.ime.sadržaj] = StupacLog(stupac)
-
+class Insert(AST('tablica vrijednosti')):
+    pass
 class Select(AST('tablica sve stupci')):
     """SELECT naredba."""
     def razriješi(self, imena):
@@ -147,5 +178,6 @@ if __name__ == '__main__':
             SELECT * FROM Trivial;
             SELECT Name, Married FROM Persons;
             SELECT Name from Persons;
+            INSERT INTO Persons VALUES('Ana', ivo);
     ''')
     print(SQLParser.parsiraj(lexer))
