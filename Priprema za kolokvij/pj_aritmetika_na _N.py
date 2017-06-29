@@ -7,8 +7,11 @@ class AN(enum.Enum):
   NA='^'
   OTVORENA='('
   ZATVORENA=')'
+<<<<<<< HEAD
   PLUS='+'
 
+=======
+>>>>>>> d43c9ea0b06269096f406fb2190b2353c7f89885
 
 def an_lex(kod):
     lex=Tokenizer(kod)
@@ -88,6 +91,7 @@ def an_interpret(izraz):
 def an_optim(izraz):
     nula, jedan=Token(AN.BROJ, '0'), Token(AN.BROJ, '1')
     if izraz ** AN.BROJ: return izraz
+<<<<<<< HEAD
     elif izraz ** Razlika:
         o1, o2 = map(an_optim, izraz.brojevi)
         if o1 == nula: return E.GREŠKA
@@ -101,6 +105,13 @@ def an_optim(izraz):
             return o1
         else: return Zbroj([o1, o2])
 
+=======
+    elif izraz ** Zbroj:
+        o1, o2=map(an_optim, izraz.pribrojnici)
+        if o1 == nula: return o2
+        elif o2 == nula: return o1
+        else: return Zbroj([o1, o2])
+>>>>>>> d43c9ea0b06269096f406fb2190b2353c7f89885
     elif izraz ** Umnožak:
         o1, o2=map(an_optim, izraz.faktori)
         if o1 == jedan: return o2
@@ -114,6 +125,7 @@ def an_optim(izraz):
         elif o_baza== nula: return nula
         elif jedan in {o_baza, o_eksponent}: return o_baza
         else: return Potencija(o_baza, o_eksponent)
+<<<<<<< HEAD
 
 
 
@@ -121,6 +133,16 @@ def an_optim(izraz):
 if __name__ == '__main__':
     lexer=an_lex('2*3-1*2')
     x=ANParser.parsiraj(lexer)
+=======
+
+
+
+
+if __name__ == '__main__': ###SMETALA MU JE FOR PETLJA!!!!
+    lexer=an_lex('2+3*5')
+    l2=an_lex('2*0+6*3')
+    x=ANParser.parsiraj(l2)
+>>>>>>> d43c9ea0b06269096f406fb2190b2353c7f89885
     x=an_optim(x)
     print(x)
     print(an_interpret(x))

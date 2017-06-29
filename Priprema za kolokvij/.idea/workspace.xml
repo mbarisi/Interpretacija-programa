@@ -19,8 +19,11 @@
         <entry file="file://$PROJECT_DIR$/pj_aritmetika_na _N.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1842">
-              <caret line="126" column="0" lean-forward="true" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
-              <folding />
+              <caret line="148" column="0" lean-forward="true" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
+              <folding>
+                <marker date="1498760333842" expanded="true" signature="38:111" ph="..." />
+                <marker date="1498760333842" expanded="true" signature="4121:4179" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -346,7 +349,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2033">
           <caret line="107" column="42" lean-forward="true" selection-start-line="107" selection-start-column="42" selection-end-line="107" selection-end-column="42" />
-          <folding />
+          <folding>
+            <marker date="1498760333842" expanded="true" signature="38:111" ph="..." />
+            <marker date="1498760333842" expanded="true" signature="4121:4179" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -362,7 +368,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1498760333842" expanded="true" signature="38:111" ph="..." />
+            <marker date="1498760333842" expanded="true" signature="4121:4179" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -465,8 +474,11 @@
     <entry file="file://$PROJECT_DIR$/pj_aritmetika_na _N.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1842">
-          <caret line="126" column="0" lean-forward="true" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
-          <folding />
+          <caret line="148" column="0" lean-forward="true" selection-start-line="148" selection-start-column="0" selection-end-line="148" selection-end-column="0" />
+          <folding>
+            <marker date="1498760333842" expanded="true" signature="38:111" ph="..." />
+            <marker date="1498760333842" expanded="true" signature="4121:4179" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>

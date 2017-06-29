@@ -76,7 +76,7 @@ if __name__ == '__main__':
     ulaz = '!(P5&!!(P3->P1))'
     tokeni = list(ls_lex(ulaz))
     print(*tokeni)
-    fo = LSParser.parsiraj(tokeni)
+    fo = LSParser.parsiraj(tokeni)ss
     print(fo)
     fo=ls_optim(fo)
     print(ls_interpret(fo, P1=False, P3=True, P5=False))
